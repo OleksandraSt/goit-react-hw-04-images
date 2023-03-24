@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Component } from 'react';
+import { useState } from 'react';
 import { BiSearch } from 'react-icons/bi';
 import {
   SearchHeader,
@@ -8,30 +8,25 @@ import {
   SearchInput,
 } from './Searchbar.styled';
 
-export class SearchBar extends Component {
-    state = {
-      query: '',
-    };
-    static propTypes = {
-      onSubmit: PropTypes.func.isRequired,
-    };
+export const SearchBar = ({ onSubmit }) => {
+  const [query, setQuery] = useState ('');
+   
+   const handleQueryChange = e => {
+    setQuery(e.currentTarget.value.toLowerCase().trim());
+   };
   
-    handleQueryChange = e => {
-      this.setState({ query: e.currentTarget.value.toLowerCase().trim() });
-    };
-    handleSubmit = e => {
+    const handleSubmit = e => {
       e.preventDefault();
-      if (this.state.query.trim() === '') {
+      if (query.trim() === '') {
         alert('Please enter a request');
       }
-      this.props.onSubmit(this.state.query);
-      this.setState({ query: '' });
+      onSubmit(query);
+      setQuery('');
     };
   
-    render() {
       return (
         <SearchHeader>
-          <SearchForm onSubmit={this.handleSubmit}>
+          <SearchForm onSubmit={handleSubmit}>
             <SearchButton type="submit">
               <BiSearch size="2em"/>
             </SearchButton>
@@ -42,13 +37,16 @@ export class SearchBar extends Component {
               autoFocus
               placeholder="Search images and photos"
               name="query"
-              value={this.state.query}
-              onChange={this.handleQueryChange}
+              value={query}
+              onChange={handleQueryChange}
             />
           </SearchForm>
         </SearchHeader>
       );
-    }
-  }
+    };
+
+  SearchBar.propTypes = {
+    onSubmit: PropTypes.func.isRequired,
+  };
   
   export default SearchBar;
